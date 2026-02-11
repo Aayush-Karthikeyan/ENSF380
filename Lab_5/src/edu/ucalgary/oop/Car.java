@@ -1,3 +1,5 @@
+package edu.ucalgary.oop;
+
 public class Car {
     // Atributes
     private String model;
