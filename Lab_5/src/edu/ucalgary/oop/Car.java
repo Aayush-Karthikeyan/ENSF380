@@ -1,40 +1,32 @@
 package edu.ucalgary.oop;
 
 public class Car {
-    // Atributes
     private String model;
     private Driver driver;
     private Engine engine;
 
-    // Primary constructor
+    // Public constructor: deep copy (safe)
     public Car(String model, Driver driver, Engine engine) {
+        this(model, driver, engine, true);
+    }
+
+    // Private constructor: choose deep vs shallow
+    private Car(String model, Driver driver, Engine engine, boolean deepCopy) {
         this.model = model;
 
-        // Deep copy
-        this.driver = new Driver(driver);
-        this.engine = new Engine(engine);
-    }
-
-    // Copy method
-    public Car copy(boolean deepCopy) {
-
         if (deepCopy) {
-            return new Car(
-                this.model,
-                new Driver(this.driver),
-                new Engine(this.engine)
-            );
-        } 
-        else {
-            // shallow copy
-            return new Car(
-                this.model,
-                this.driver,
-                this.engine
-            );
+            this.driver = new Driver(driver);
+            this.engine = new Engine(engine);
+        } else {
+            this.driver = driver;   // shallow: same object reference
+            this.engine = engine;   // shallow: same object reference
         }
     }
-    // Getters
+
+    public Car copy(boolean deepCopy) {
+        return new Car(this.model, this.driver, this.engine, deepCopy);
+    }
+
     public String getModel() {
         return model;
     }
@@ -47,16 +39,15 @@ public class Car {
         return engine;
     }
 
-    // Setters
     public void setModel(String model) {
         this.model = model;
     }
 
     public void setDriver(Driver driver) {
-        this.driver = new Driver(driver); // keep deep copy safety
+        this.driver = new Driver(driver);
     }
 
     public void setEngine(Engine engine) {
-        this.engine = new Engine(engine); // keep deep copy safety
+        this.engine = new Engine(engine);
     }
 }
