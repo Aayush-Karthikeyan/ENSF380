@@ -10,7 +10,7 @@ public class GradeManager {
 
     // Constructor to initialize the student list.
     public GradeManager(int maxStudents) {
-        students = null;
+        students = new Student[maxStudents];
         currentSize = 0;
     }
     
@@ -22,6 +22,9 @@ public class GradeManager {
      * @throws IllegalStateException if the student list is full.
      */
     public void addStudent(Student student) {
+        if (student == null) {
+            throw new IllegalArgumentException("Student cannot be null.");
+        }
         if (currentSize >= students.length) {
             throw new IllegalStateException("Cannot add more students. The list is full.");
         }
@@ -65,12 +68,15 @@ public class GradeManager {
                 total += students[i].calculateAverage();
                 count++;
             } catch (IllegalStateException e) {
-                System.out.println("Skipping student " + students[i].getStudentID() + ": " + e.getMessage());
+                // Skip students with no grades
             }
         }        
 
+        if (count == 0) {
+            throw new IllegalStateException("No valid grades available for calculation.");
+        }
 
-        return total;  // Return the calculated class average
+        return total / count;  // Return the calculated class average
     }
 
     /**
@@ -78,7 +84,7 @@ public class GradeManager {
      * @return The number of students in the list.
      */
     public int getTotalStudents() {
-        return currentSize - 1;
+        return currentSize;
     }
 
 }

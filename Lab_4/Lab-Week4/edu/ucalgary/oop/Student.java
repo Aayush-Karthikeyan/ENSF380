@@ -20,9 +20,10 @@ public class Student {
      * @param numCourses The number of courses the student is enrolled in.
      */
     public Student(String studentID, String name, int numCourses) {
-        this.studentID = name;
+        this.studentID = studentID;
+        this.name = name;
         this.grades = new int[numCourses];  // Initialize grades array with the specified number of courses
-        Arrays.fill(grades, 0);  
+        Arrays.fill(grades, -1);
     }
 
     /**
@@ -32,10 +33,10 @@ public class Student {
      * @throws IllegalArgumentException if the index is out of bounds or the grade is invalid.
      */
     public void addGrade(int courseIndex, int grade) {
-        if (courseIndex < 0 || courseIndex > grades.length) { 
+        if (courseIndex < 0 || courseIndex >= grades.length) { 
             throw new IllegalArgumentException("Invalid course index.");
         }
-        if (grade < 0 || grade >= 100) {
+        if (grade < 0 || grade > 100) {
             throw new IllegalArgumentException("Grade must be between 0 and 100.");
         }
         grades[courseIndex] = grade;  // Assign the grade to the appropriate index in the grades array
@@ -48,7 +49,7 @@ public class Student {
      * @throws IllegalArgumentException if the index is out of bounds.
      */
     public int getGrade(int courseIndex) {
-        if (courseIndex < 0 || courseIndex > grades.length) {
+        if (courseIndex < 0 || courseIndex >= grades.length) {
             throw new IllegalArgumentException("Invalid course index.");
         }
         return grades[courseIndex];  // Return the grade for the requested course index
@@ -56,7 +57,21 @@ public class Student {
 
 
     public double calculateAverage() {
-        return 0.0;  
+        double total = 0.0;
+        int count = 0;
+
+        for (int grade : grades) {
+            if (grade >= 0) {
+                total += grade;
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            throw new IllegalStateException("No grades available for calculation.");
+        }
+
+        return total / count;
     }
 
     /**
@@ -64,7 +79,7 @@ public class Student {
      * @return The student's unique identifier.
      */
     public String getStudentID() { 
-        return name; 
+        return studentID; 
     }
 
     /**
