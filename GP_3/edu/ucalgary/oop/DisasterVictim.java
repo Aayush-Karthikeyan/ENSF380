@@ -1,7 +1,6 @@
 package edu.ucalgary.oop;
 
 import java.time.LocalDate;
-import java.time.Period;
 
 public class DisasterVictim {
     private String firstName;
@@ -10,208 +9,312 @@ public class DisasterVictim {
     private FamilyRelation[] familyConnections;
     private MedicalRecord[] medicalRecords;
     private Supply[] personalBelongings;
-    private final LocalDate ENTRY_DATE;
+    private LocalDate ENTRY_DATE;
     private String gender;
     private String comments;
-    private boolean pleaseSpecifyMode = false;
 
+    // Constructors
     public DisasterVictim(String firstName, LocalDate entryDate) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("firstName cannot be null/empty.");
+        }
+        if (entryDate == null) {
+            throw new IllegalArgumentException("entryDate cannot be null.");
+        }
+
         this.firstName = firstName;
         this.ENTRY_DATE = entryDate;
+
+        // initialize arrays to avoid null issues
         this.familyConnections = new FamilyRelation[0];
         this.medicalRecords = new MedicalRecord[0];
         this.personalBelongings = new Supply[0];
     }
 
     public DisasterVictim(String firstName, LocalDate entryDate, LocalDate dateOfBirth) {
-        this(firstName, entryDate);
-        setDateOfBirth(dateOfBirth);
-    }
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("firstName cannot be null/empty.");
+        }
+        if (entryDate == null) {
+            throw new IllegalArgumentException("entryDate cannot be null.");
+        }
+        if (dateOfBirth == null) {
+            throw new IllegalArgumentException("dateOfBirth cannot be null.");
+        }
+        if (dateOfBirth.isAfter(entryDate)) {
+            throw new IllegalArgumentException("dateOfBirth cannot be after entryDate.");
+        }
 
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    public void setFirstName(String firstName) {
         this.firstName = firstName;
+        this.ENTRY_DATE = entryDate;
+        this.dateOfBirth = dateOfBirth;
+
+        this.familyConnections = new FamilyRelation[0];
+        this.medicalRecords = new MedicalRecord[0];
+        this.personalBelongings = new Supply[0];
+    }
+
+    // Getters
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getLastName() {
-        return this.lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+        return lastName;
     }
 
     public LocalDate getDateOfBirth() {
-        return this.dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        if (dateOfBirth != null && dateOfBirth.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Date of birth cannot be in the future.");
-        }
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getGender() {
-        return this.gender;
-    }
-
-    public void setGender(String gender) {
-        if (gender == null) {
-            throw new IllegalArgumentException("Gender cannot be null.");
-        }
-
-        // If we're in "please specify" mode, accept any free-form text
-        if (this.pleaseSpecifyMode) {
-            this.gender = gender;
-            this.pleaseSpecifyMode = false;
-            return;
-        }
-
-        String lowerGender = gender.toLowerCase();
-
-        // Check if it's the "please specify" option
-        if (lowerGender.equals("please specify")) {
-            this.pleaseSpecifyMode = true;
-            return;
-        }
-
-        // Normalize to proper case for comparison
-        String normalized = lowerGender.substring(0, 1).toUpperCase() + lowerGender.substring(1);
-
-        // Validate against allowed options with age checks
-        if (normalized.equals("Man") || normalized.equals("Woman")) {
-            // Must be 18 or older
-            if (this.dateOfBirth == null) {
-                throw new IllegalArgumentException("Date of birth must be set to use Man/Woman.");
-            }
-            int age = Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-            if (age < 18) {
-                throw new IllegalArgumentException(normalized + " is only valid for adults (18+).");
-            }
-            this.gender = normalized;
-        } else if (normalized.equals("Boy") || normalized.equals("Girl")) {
-            // Must be under 18
-            if (this.dateOfBirth == null) {
-                throw new IllegalArgumentException("Date of birth must be set to use Boy/Girl.");
-            }
-            int age = Period.between(this.dateOfBirth, LocalDate.now()).getYears();
-            if (age >= 18) {
-                throw new IllegalArgumentException(normalized + " is only valid for children (under 18).");
-            }
-            this.gender = normalized;
-        } else {
-            throw new IllegalArgumentException("Invalid gender option: " + gender);
-        }
-    }
-
-    public String getComments() {
-        return this.comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public LocalDate getEntryDate() {
-        return this.ENTRY_DATE;
+        return dateOfBirth;
     }
 
     public FamilyRelation[] getFamilyConnections() {
-        return this.familyConnections;
-    }
-
-    public void setFamilyConnections(FamilyRelation[] connections) {
-        this.familyConnections = connections;
+        return familyConnections;
     }
 
     public MedicalRecord[] getMedicalRecords() {
-        return this.medicalRecords;
-    }
-
-    public void setMedicalRecords(MedicalRecord[] records) {
-        this.medicalRecords = records;
+        return medicalRecords;
     }
 
     public Supply[] getPersonalBelongings() {
-        return this.personalBelongings;
+        return personalBelongings;
     }
 
-    public void setPersonalBelongings(Supply[] supplies) {
-        this.personalBelongings = supplies;
+    public LocalDate getEntryDate() {
+        return ENTRY_DATE;
     }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    // Setters
+    public void setFirstName(String newFirstName) {
+        if (newFirstName == null || newFirstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("firstName cannot be null/empty.");
+        }
+        this.firstName = newFirstName;
+    }
+
+    public void setLastName(String newLastName) {
+
+        this.lastName = newLastName;
+    }
+
+    public void setDateOfBirth(LocalDate newDateOfBirth) {
+        if (newDateOfBirth == null) {
+            throw new IllegalArgumentException("dateOfBirth cannot be null.");
+        }
+        if (ENTRY_DATE != null && newDateOfBirth.isAfter(ENTRY_DATE)) {
+            throw new IllegalArgumentException("dateOfBirth cannot be after entryDate.");
+        }
+        this.dateOfBirth = newDateOfBirth;
+    }
+
+    public void setFamilyConnections(FamilyRelation[] newFamilyConnections) {
+        if (newFamilyConnections == null) {
+            throw new IllegalArgumentException("familyConnections cannot be null.");
+        }
+        this.familyConnections = newFamilyConnections;
+    }
+
+    public void setMedicalRecords(MedicalRecord[] newMedicalRecords) {
+        if (newMedicalRecords == null) {
+            throw new IllegalArgumentException("medicalRecords cannot be null.");
+        }
+        this.medicalRecords = newMedicalRecords;
+    }
+
+    public void setPersonalBelongings(Supply[] newPersonalBelongings) {
+        if (newPersonalBelongings == null) {
+            throw new IllegalArgumentException("personalBelongings cannot be null.");
+        }
+        this.personalBelongings = newPersonalBelongings;
+    }
+
+    public void setGender(String gender) {
+        if (gender == null || gender.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid gender option.");
+        }
+
+        String raw = gender.trim();
+
+        // Step 1: detect "please specify" (case-insensitive, whitespace-insensitive)
+        String normalizedKey = raw.toLowerCase().replaceAll("\\s+", " ");
+        if (normalizedKey.equals("please specify")) {
+            this.gender = "Please Specify";
+            return;
+        }
+
+        // Step 2: if previously set to "Please Specify", allow any non-empty value
+        if (this.gender != null && this.gender.equals("Please Specify")) {
+            this.gender = raw;
+            return;
+        }
+
+        // Step 3: otherwise enforce the restricted options
+        String g = raw.toLowerCase();
+
+        String normalized;
+        if (g.equals("man")) {
+            normalized = "Man";
+        } else if (g.equals("woman")) {
+            normalized = "Woman";
+        } else if (g.equals("boy")) {
+            normalized = "Boy";
+        } else if (g.equals("girl")) {
+            normalized = "Girl";
+        } else {
+            throw new IllegalArgumentException("Invalid gender option.");
+        }
+
+        // Step 4: enforce child/adult rules if DOB is known
+        if (this.dateOfBirth != null) {
+            LocalDate ref = (this.ENTRY_DATE != null) ? this.ENTRY_DATE : LocalDate.now();
+
+            int age = ref.getYear() - this.dateOfBirth.getYear();
+            if (ref.getMonthValue() < this.dateOfBirth.getMonthValue()
+                    || (ref.getMonthValue() == this.dateOfBirth.getMonthValue()
+                            && ref.getDayOfMonth() < this.dateOfBirth.getDayOfMonth())) {
+                age--;
+            }
+
+            boolean isChild = age < 18;
+
+            if (isChild && (normalized.equals("Man") || normalized.equals("Woman"))) {
+                throw new IllegalArgumentException("Invalid gender option.");
+            }
+            if (!isChild && (normalized.equals("Boy") || normalized.equals("Girl"))) {
+                throw new IllegalArgumentException("Invalid gender option.");
+            }
+        }
+
+        this.gender = normalized;
+    }
+
+    public void setComments(String newComments) {
+        this.comments = newComments;
+    }
+
+    // Add methods
 
     public void addPersonalBelonging(Supply belonging) {
-        Supply[] newBelongings = new Supply[this.personalBelongings.length + 1];
-        for (int i = 0; i < this.personalBelongings.length; i++) {
-            newBelongings[i] = this.personalBelongings[i];
+        if (belonging == null) {
+            throw new IllegalArgumentException("belonging cannot be null.");
         }
-        newBelongings[this.personalBelongings.length] = belonging;
-        this.personalBelongings = newBelongings;
-    }
+        if (personalBelongings == null) {
+            personalBelongings = new Supply[0];
+        }
 
-    public void removePersonalBelonging(Supply belonging) {
-        int index = -1;
-        for (int i = 0; i < this.personalBelongings.length; i++) {
-            if (this.personalBelongings[i] == belonging) {
-                index = i;
-                break;
-            }
+        Supply[] newTemp = new Supply[personalBelongings.length + 1];
+        for (int i = 0; i < personalBelongings.length; i++) {
+            newTemp[i] = personalBelongings[i];
         }
-        if (index == -1) {
-            throw new IllegalArgumentException("Personal belonging not found.");
-        }
-        Supply[] newBelongings = new Supply[this.personalBelongings.length - 1];
-        int j = 0;
-        for (int i = 0; i < this.personalBelongings.length; i++) {
-            if (i != index) {
-                newBelongings[j] = this.personalBelongings[i];
-                j++;
-            }
-        }
-        this.personalBelongings = newBelongings;
+        newTemp[newTemp.length - 1] = belonging;
+        personalBelongings = newTemp;
     }
 
     public void addFamilyConnection(FamilyRelation connection) {
-        FamilyRelation[] newConnections = new FamilyRelation[this.familyConnections.length + 1];
-        for (int i = 0; i < this.familyConnections.length; i++) {
-            newConnections[i] = this.familyConnections[i];
+        if (connection == null) {
+            throw new IllegalArgumentException("connection cannot be null.");
         }
-        newConnections[this.familyConnections.length] = connection;
-        this.familyConnections = newConnections;
-    }
+        if (familyConnections == null) {
+            familyConnections = new FamilyRelation[0];
+        }
 
-    public void removeFamilyConnection(FamilyRelation connection) {
-        int index = -1;
-        for (int i = 0; i < this.familyConnections.length; i++) {
-            if (this.familyConnections[i] == connection) {
-                index = i;
-                break;
-            }
+        FamilyRelation[] newTemp = new FamilyRelation[familyConnections.length + 1];
+        for (int i = 0; i < familyConnections.length; i++) {
+            newTemp[i] = familyConnections[i];
         }
-        if (index == -1) {
-            throw new IllegalArgumentException("Family connection not found.");
-        }
-        FamilyRelation[] newConnections = new FamilyRelation[this.familyConnections.length - 1];
-        int j = 0;
-        for (int i = 0; i < this.familyConnections.length; i++) {
-            if (i != index) {
-                newConnections[j] = this.familyConnections[i];
-                j++;
-            }
-        }
-        this.familyConnections = newConnections;
+        newTemp[newTemp.length - 1] = connection;
+        familyConnections = newTemp;
     }
 
     public void addMedicalRecord(MedicalRecord record) {
-        MedicalRecord[] newRecords = new MedicalRecord[this.medicalRecords.length + 1];
-        for (int i = 0; i < this.medicalRecords.length; i++) {
-            newRecords[i] = this.medicalRecords[i];
+        if (record == null) {
+            throw new IllegalArgumentException("record cannot be null.");
         }
-        newRecords[this.medicalRecords.length] = record;
-        this.medicalRecords = newRecords;
+        if (medicalRecords == null) {
+            medicalRecords = new MedicalRecord[0];
+        }
+
+        MedicalRecord[] newTemp = new MedicalRecord[medicalRecords.length + 1];
+        for (int i = 0; i < medicalRecords.length; i++) {
+            newTemp[i] = medicalRecords[i];
+        }
+        newTemp[newTemp.length - 1] = record;
+        medicalRecords = newTemp;
     }
+
+    // Remove methods
+
+    public void removePersonalBelonging(Supply belonging) {
+        if (belonging == null) {
+            throw new IllegalArgumentException("Belonging cannot be null.");
+        }
+        if (personalBelongings == null || personalBelongings.length == 0) {
+            throw new IllegalArgumentException("Belonging not found.");
+        }
+
+        int count = 0;
+        boolean found = false;
+
+        for (int i = 0; i < personalBelongings.length; i++) {
+            if (personalBelongings[i] == belonging) {
+                found = true;
+            } else {
+                count++;
+            }
+        }
+
+        if (!found) {
+            throw new IllegalArgumentException("Belonging not found.");
+        }
+
+        Supply[] newTemp = new Supply[count];
+        int j = 0;
+        for (int i = 0; i < personalBelongings.length; i++) {
+            if (personalBelongings[i] != belonging) {
+                newTemp[j] = personalBelongings[i];
+                j++;
+            }
+        }
+
+        personalBelongings = newTemp;
+    }
+
+    public void removeFamilyConnection(FamilyRelation connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection cannot be null.");
+        }
+        if (familyConnections == null || familyConnections.length == 0) {
+            return;
+        }
+
+        int count = 0;
+        for (int i = 0; i < familyConnections.length; i++) {
+            if (familyConnections[i] != connection) {
+                count++;
+            }
+        }
+
+        if (count == familyConnections.length) {
+            return;
+        }
+
+        FamilyRelation[] newTemp = new FamilyRelation[count];
+        int j = 0;
+        for (int i = 0; i < familyConnections.length; i++) {
+            if (familyConnections[i] != connection) {
+                newTemp[j] = familyConnections[i];
+                j++;
+            }
+        }
+
+        familyConnections = newTemp;
+    }
+
 }

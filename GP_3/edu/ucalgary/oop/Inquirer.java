@@ -7,25 +7,43 @@ public class Inquirer {
     private final String SERVICES_PHONE;
 
     public Inquirer(String firstName, String lastName, String phone, String info) {
-        this.FIRST_NAME = firstName;
-        this.LAST_NAME = lastName;
-        this.SERVICES_PHONE = phone;
-        this.INFO = info;
+
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty.");
+        }
+
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty.");
+        }
+
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone cannot be null or empty.");
+        }
+
+        if (info == null || info.trim().isEmpty()) {
+            throw new IllegalArgumentException("Info cannot be null or empty.");
+        }
+
+        this.FIRST_NAME = firstName.trim();
+        this.LAST_NAME = lastName.trim();
+        this.SERVICES_PHONE = phone.trim();
+        this.INFO = info.trim();
     }
 
+    // Getters
     public String getFirstName() {
-        return this.FIRST_NAME;
+        return FIRST_NAME;
     }
 
     public String getLastName() {
-        return this.LAST_NAME;
+        return LAST_NAME;
     }
 
     public String getServicesPhoneNum() {
-        return this.SERVICES_PHONE;
+        return SERVICES_PHONE;
     }
 
     public String getInfo() {
-        return this.INFO;
+        return INFO;
     }
 }

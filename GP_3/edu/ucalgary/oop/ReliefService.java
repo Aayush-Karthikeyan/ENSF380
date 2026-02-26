@@ -9,7 +9,8 @@ public class ReliefService {
     private String infoProvided;
     private Location lastKnownLocation;
 
-    public ReliefService(Inquirer inquirer, DisasterVictim missingPerson, LocalDate inquiryDate, String infoProvided, Location lastLocation) {
+    public ReliefService(Inquirer inquirer, DisasterVictim missingPerson, LocalDate inquiryDate, String infoProvided,
+            Location lastLocation) {
         this.inquirer = inquirer;
         this.missingPerson = missingPerson;
         setDateOfInquiry(inquiryDate);
@@ -65,9 +66,9 @@ public class ReliefService {
 
     public String getLogDetails() {
         return "Inquirer: " + inquirer.getFirstName() +
-               ", Missing Person: " + missingPerson.getFirstName() +
-               ", Date of Inquiry: " + dateOfInquiry.toString() +
-               ", Info Provided: " + infoProvided +
-               ", Last Known Location: " + lastKnownLocation.getName();
+                ", Missing Person: " + missingPerson.getFirstName() +
+                ", Date of Inquiry: " + dateOfInquiry.toString() +
+                ", Info Provided: " + infoProvided +
+                ", Last Known Location: " + lastKnownLocation.getName();
     }
 }
